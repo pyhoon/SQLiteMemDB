@@ -43,7 +43,6 @@ Sub AppStart (Args() As String)
 End Sub
 
 #Region Database Initialization & Hydration
-
 Private Sub InitializeMemoryDB
     #If B4J
     ' FIX 1: B4J requires the full JDBC string for in-memory DBs
@@ -95,11 +94,9 @@ Private Sub CreateInitialTables
     MemDB.ExecNonQuery("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)")
     MemDB.ExecNonQuery2("INSERT INTO users (name) VALUES (?)", Array("First User Instance"))
 End Sub
-
 #End Region
 
 #Region Safe Auto-Save Infrastructure
-
 Private Sub StartAutoSaveLoop
     AutoSaveTimer.Initialize("AutoSaveTimer", AUTO_SAVE_INTERVAL_MS)
     AutoSaveTimer.Enabled = True
@@ -177,5 +174,4 @@ Private Sub AtomicReplaceFile (Dir As String, TempFileName As String, FinalFileN
         File.Delete(Dir, TempFileName)
     #End If
 End Sub
-
 #End Region
