@@ -18,39 +18,47 @@ Version=10.5
 Sub Process_Globals
     Private MemDB As SQL
     Private AutoSaveTimer As Timer
-    
+    Private DataManagementTimer As Timer
+
     ' Configurations
     Private Const DB_NAME As String = "persistent.db"
     Private Const DB_TMP As String = "persistent.db.tmp"
-    Private Const AUTO_SAVE_INTERVAL_MS As Int = 5000 ' 5 minutes
+    Private Const AUTO_SAVE_INTERVAL_MS As Int = 300000 ' 5 minutes
+    Private Const DATA_CLEANUP_INTERVAL_MS As Int = 60000 ' 1 minute
+    Private Const MAX_RECORDS As Int = 1000
+    Private Const OLD_RECORD_DAYS As Int = 30
 End Sub
 
 Sub AppStart (Args() As String)
+    Log("SQLite In-Memory Demo (Console Mode)")
+
     ' 1. Spin up the fresh in-memory space
     InitializeMemoryDB
-    
+
     ' 2. Hydrate memory from disk backup if it exists
     If File.Exists(GetDBFolder, DB_NAME) Then
         LoadBackupIntoMemory
     Else
-        CreateInitialTables ' First run configuration
+        CreateInitialTables
     End If
-    
+
     ' 3. Boot up the background auto-save loop
     StartAutoSaveLoop
-	
-	StartMessageLoop
+
+    ' 4. Start data management
+    StartDataManagementLoop
+
+    ' 5. Show initial stats
+    ShowDatabaseStats
+    ListAllUsers
+
+    StartMessageLoop
 End Sub
 
 #Region Database Initialization & Hydration
 Private Sub InitializeMemoryDB
     #If B4J
-    ' FIX 1: B4J requires the full JDBC string for in-memory DBs
-    #if B4J
     MemDB.InitializeSQLite("", ":memory:", True)
-    #Else If B4A OR B4I
-    MemDB.Initialize("", ":memory:", True)
-    #End If
     #Else
     MemDB.Initialize("", ":memory:", True)
     #End If
@@ -59,44 +67,217 @@ End Sub
 
 ' DISK -> MEMORY
 Private Sub LoadBackupIntoMemory
-    ' FIX 2: Force forward slashes for SQLite engine compatibility (especially on Windows)
-    Dim FullDiskPath As String = File.Combine(GetDBFolder, DB_NAME).Replace("\", "/")
-    
+    Dim FullDiskPath As String = File.Combine(GetDBFolder, DB_NAME)
     Try
-        ' Link the physical disk file directly to our RAM workspace instance
-        MemDB.ExecNonQuery($"ATTACH DATABASE '${FullDiskPath}' AS disk_db"$)
-        
-        ' FIX 3: DO NOT use "CREATE TABLE ... AS SELECT". It destroys Primary Keys, 
-        ' AUTOINCREMENT, and Indexes. Explicitly define your schema instead.
-        MemDB.ExecNonQuery("CREATE TABLE IF NOT EXISTS main.users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)")
-        
-        ' Inject data blocks straight over
-        MemDB.ExecNonQuery("INSERT OR REPLACE INTO main.users SELECT * FROM disk_db.users")
-        
-        Log("Hydration Complete: Backup successfully parsed into system RAM.")
-        
-        ' FIX 4: B4X does NOT have a 'Finally' block. Detach must happen here on success.
-        MemDB.ExecNonQuery("DETACH DATABASE disk_db")
-        
+        MemDB.ExecNonQuery2("ATTACH DATABASE ? AS disk_db", Array(FullDiskPath))
+
+        MemDB.ExecNonQuery("BEGIN TRANSACTION")
+
+        Dim rs As ResultSet = MemDB.ExecQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
+        If rs.NextRow Then
+            rs.Close
+            MemDB.ExecNonQuery("DROP TABLE users")
+        End If
+        rs.Close
+
+        MemDB.ExecNonQuery("CREATE TABLE users AS SELECT * FROM disk_db.users")
+
+        MemDB.ExecNonQuery("COMMIT")
+
+        Dim count As Int = MemDB.ExecQuerySingleResult("SELECT COUNT(*) FROM users")
+        Log($"Hydration Complete: ${count} users loaded into RAM."$)
+
     Catch
         Log("Hydration Failure: " & LastException.Message)
-        ' Ensure detach happens even on failure to prevent "database disk_db is already attached" errors later
         Try
-            MemDB.ExecNonQuery("DETACH DATABASE disk_db")
+            MemDB.ExecNonQuery("ROLLBACK")
         Catch
-            ' Ignore detach errors if it never attached in the first place
-			Log(LastException.Message)
         End Try
+    End Try
+
+    Try
+        MemDB.ExecNonQuery("DETACH DATABASE disk_db")
+    Catch
+        Log("Detach warning: " & LastException.Message)
     End Try
 End Sub
 
 Private Sub CreateInitialTables
-    MemDB.ExecNonQuery("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)")
-    MemDB.ExecNonQuery2("INSERT INTO users (name) VALUES (?)", Array("First User Instance"))
+    MemDB.ExecNonQuery("CREATE TABLE users (" & _
+                       "id INTEGER PRIMARY KEY AUTOINCREMENT, " & _
+                       "name TEXT NOT NULL, " & _
+                       "email TEXT, " & _
+                       "age INTEGER, " & _
+                       "created_at TEXT DEFAULT CURRENT_TIMESTAMP, " & _
+                       "updated_at TEXT DEFAULT CURRENT_TIMESTAMP, " & _
+                       "is_active INTEGER DEFAULT 1)")
+
+    MemDB.ExecNonQuery("CREATE INDEX IF NOT EXISTS idx_users_created ON users(created_at)")
+    MemDB.ExecNonQuery("CREATE INDEX IF NOT EXISTS idx_users_updated ON users(updated_at)")
+    MemDB.ExecNonQuery("CREATE INDEX IF NOT EXISTS idx_users_active ON users(is_active)")
+
+    Dim sampleNames As List = Array("John Doe", "Jane Smith", "Bob Johnson", "Alice Williams", "Charlie Brown")
+    For Each name As String In sampleNames
+        Dim email As String = name.ToLowerCase.Replace(" ", ".") & "@example.com"
+        Dim age As Int = 20 + Rnd(1, 40)
+        AddUser(name, email, age)
+    Next
+
+    Log("Initial tables created with sample data.")
 End Sub
 #End Region
 
-#Region Safe Auto-Save Infrastructure
+#Region CRUD Operations
+
+Public Sub AddUser(name As String, email As String, age As Int) As Boolean
+    Try
+        If name.Trim = "" Then Return False
+        Dim sql As String = "INSERT INTO users (name, email, age, created_at, updated_at) VALUES (?, ?, ?, datetime('now'), datetime('now'))"
+        MemDB.ExecNonQuery2(sql, Array(name.Trim, email.Trim, age))
+        Log($"User '${name}' added"$)
+        Return True
+    Catch
+        Log("Add user error: " & LastException.Message)
+        Return False
+    End Try
+End Sub
+
+Public Sub GetUsers As List
+    Dim users As List
+    users.Initialize
+    Try
+        Dim rs As ResultSet = MemDB.ExecQuery("SELECT id, name, email, age, created_at, updated_at, is_active FROM users WHERE is_active = 1 ORDER BY created_at DESC")
+        Do While rs.NextRow
+            Dim user As Map
+            user.Initialize
+            user.Put("id", rs.GetInt("id"))
+            user.Put("name", rs.GetString("name"))
+            user.Put("email", rs.GetString("email"))
+            user.Put("age", rs.GetInt("age"))
+            user.Put("created_at", rs.GetString("created_at"))
+            user.Put("updated_at", rs.GetString("updated_at"))
+            user.Put("is_active", rs.GetInt("is_active"))
+            users.Add(user)
+        Loop
+        rs.Close
+    Catch
+        Log("Get users error: " & LastException.Message)
+    End Try
+    Return users
+End Sub
+
+Public Sub GetUserById(id As Int) As Map
+    Dim user As Map
+    user.Initialize
+    Try
+        Dim rs As ResultSet = MemDB.ExecQuery2("SELECT id, name, email, age, created_at, updated_at, is_active FROM users WHERE id = ?", Array(id))
+        If rs.NextRow Then
+            user.Put("id", rs.GetInt("id"))
+            user.Put("name", rs.GetString("name"))
+            user.Put("email", rs.GetString("email"))
+            user.Put("age", rs.GetInt("age"))
+            user.Put("created_at", rs.GetString("created_at"))
+            user.Put("updated_at", rs.GetString("updated_at"))
+            user.Put("is_active", rs.GetInt("is_active"))
+        End If
+        rs.Close
+    Catch
+        Log("Get user error: " & LastException.Message)
+    End Try
+    Return user
+End Sub
+
+Public Sub UpdateUser(id As Int, name As String, email As String, age As Int) As Boolean
+    Try
+        If name.Trim = "" Then Return False
+        Dim rowsAffected As Int = MemDB.ExecNonQuery2("UPDATE users SET name = ?, email = ?, age = ?, updated_at = datetime('now') WHERE id = ? AND is_active = 1", Array(name.Trim, email.Trim, age, id))
+        If rowsAffected > 0 Then
+            Log($"User '${name}' updated"$)
+            Return True
+        End If
+        Return False
+    Catch
+        Log("Update user error: " & LastException.Message)
+        Return False
+    End Try
+End Sub
+
+Public Sub DeleteUser(id As Int) As Boolean
+    Try
+        Dim user As Map = GetUserById(id)
+        Dim rowsAffected As Int = MemDB.ExecNonQuery2("UPDATE users SET is_active = 0, updated_at = datetime('now') WHERE id = ?", Array(id))
+        If rowsAffected > 0 Then
+            Log($"User '${user.Get("name")}' soft deleted"$)
+            Return True
+        End If
+        Return False
+    Catch
+        Log("Delete user error: " & LastException.Message)
+        Return False
+    End Try
+End Sub
+
+Public Sub HardDeleteInactiveUsers() As Int
+    Try
+        Dim rowsAffected As Int = MemDB.ExecNonQuery("DELETE FROM users WHERE is_active = 0")
+        If rowsAffected > 0 Then Log($"Hard deleted ${rowsAffected} inactive users"$)
+        Return rowsAffected
+    Catch
+        Log("Hard delete error: " & LastException.Message)
+        Return 0
+    End Try
+End Sub
+#End Region
+
+#Region Data Management & Cleanup
+Private Sub StartDataManagementLoop
+    DataManagementTimer.Initialize("DataManagementTimer", DATA_CLEANUP_INTERVAL_MS)
+    DataManagementTimer.Enabled = True
+    Log("Data management engine initiated.")
+End Sub
+
+Private Sub DataManagementTimer_Tick
+    Log("Data management check triggered...")
+    ManageRecordCount
+    DeleteOldRecords
+    HardDeleteOldInactiveUsers
+End Sub
+
+Private Sub ManageRecordCount
+    Try
+        Dim count As Int = MemDB.ExecQuerySingleResult("SELECT COUNT(*) FROM users WHERE is_active = 1")
+        If count > MAX_RECORDS Then
+            Dim toDelete As Int = count - MAX_RECORDS
+            Log($"Record limit exceeded. Deleting ${toDelete} oldest..."$)
+            MemDB.ExecNonQuery2("DELETE FROM users WHERE id IN (SELECT id FROM users WHERE is_active = 1 ORDER BY created_at ASC LIMIT ?)", Array(toDelete))
+        End If
+    Catch
+        Log("Manage record count error: " & LastException.Message)
+    End Try
+End Sub
+
+Private Sub DeleteOldRecords
+    Try
+        MemDB.ExecNonQuery2("DELETE FROM users WHERE is_active = 1 AND created_at < datetime('now', ?)", Array("-" & OLD_RECORD_DAYS & " days"))
+        Dim rowsAffected As Int = MemDB.ExecQuerySingleResult("SELECT changes()")
+        If rowsAffected > 0 Then Log($"Deleted ${rowsAffected} records older than ${OLD_RECORD_DAYS} days"$)
+    Catch
+        Log("Delete old records error: " & LastException.Message)
+    End Try
+End Sub
+
+Private Sub HardDeleteOldInactiveUsers
+    Try
+        MemDB.ExecNonQuery2("DELETE FROM users WHERE is_active = 0 AND updated_at < datetime('now', ?)", Array("-7 days"))
+        Dim rowsAffected As Int = MemDB.ExecQuerySingleResult("SELECT changes()")
+        If rowsAffected > 0 Then Log($"Hard deleted ${rowsAffected} old inactive users"$)
+    Catch
+        Log("Hard delete old inactive error: " & LastException.Message)
+    End Try
+End Sub
+#End Region
+
+#Region Auto-Save Infrastructure
 Private Sub StartAutoSaveLoop
     AutoSaveTimer.Initialize("AutoSaveTimer", AUTO_SAVE_INTERVAL_MS)
     AutoSaveTimer.Enabled = True
@@ -108,39 +289,55 @@ Private Sub AutoSaveTimer_Tick
     SafeVacuumToDisk
 End Sub
 
-' MEMORY -> DISK (Shadow Swapping Pattern)
 Public Sub SafeVacuumToDisk
     Dim TargetFolder As String = GetDBFolder
-    ' FIX 2: Force forward slashes for VACUUM INTO
-    Dim SafeTempPath As String = File.Combine(TargetFolder, DB_TMP).Replace("\", "/")
-    
-    ' Clean up residual temp files from historical application crashes
-    If File.Exists(TargetFolder, DB_TMP) Then
-        File.Delete(TargetFolder, DB_TMP)
-    End If
-    
+    Dim TempPath As String = File.Combine(TargetFolder, DB_TMP)
+
+    If File.Exists(TargetFolder, DB_TMP) Then File.Delete(TargetFolder, DB_TMP)
+
     Try
-        ' FIX 5: Do NOT use parameterized queries (?) for VACUUM INTO filenames. 
-        ' SQLite JDBC drivers often fail to bind DDL/utility command parameters correctly.
-        ' Use string interpolation with escaped single quotes instead.
-        MemDB.ExecNonQuery($"VACUUM INTO '${SafeTempPath}'"$)
-        
-        ' FIX 6: Perform a TRUE atomic replace. 
-        ' Deleting the original BEFORE copying creates a race condition where a crash = total data loss.
-        AtomicReplaceFile(TargetFolder, DB_TMP, DB_NAME)
-        
-        Log("Auto-Save State: Success. Backup file rewritten safely.")
-        
-    Catch
-        Log("Auto-Save State: Failed! Reason: " & LastException.Message)
-        ' Purge invalid chunk allocations 
-        If File.Exists(TargetFolder, DB_TMP) Then
-            File.Delete(TargetFolder, DB_TMP)
+        Dim recordCount As Int = MemDB.ExecQuerySingleResult("SELECT COUNT(*) FROM users")
+        If recordCount = 0 Then
+            Log("Warning: No data in memory, skipping save.")
+            Return
         End If
+
+        MemDB.ExecNonQuery2("VACUUM INTO ?", Array(TempPath))
+
+        If File.Exists(TargetFolder, DB_TMP) Then
+            Dim fileSize As Long = File.Size(TargetFolder, DB_TMP)
+            If fileSize > 0 Then
+                If File.Exists(TargetFolder, DB_NAME) Then File.Delete(TargetFolder, DB_NAME)
+                File.Copy(TargetFolder, DB_TMP, TargetFolder, DB_NAME)
+                File.Delete(TargetFolder, DB_TMP)
+                Log($"Auto-Save Success: ${fileSize} bytes written to disk (${recordCount} records)."$)
+            Else
+                Log("Auto-Save Failed: Temp file is empty.")
+                File.Delete(TargetFolder, DB_TMP)
+            End If
+        Else
+            Log("Auto-Save Failed: Temp file not created.")
+        End If
+
+    Catch
+        Log("Auto-Save Failed: " & LastException.Message)
+        If File.Exists(TargetFolder, DB_TMP) Then File.Delete(TargetFolder, DB_TMP)
     End Try
 End Sub
 
-' Cross-Platform Runtime Storage Path Resolver
+Public Sub SaveAndCleanup
+    Log("Saving memory to disk before shutdown...")
+    SafeVacuumToDisk
+    If AutoSaveTimer.IsInitialized Then AutoSaveTimer.Enabled = False
+    If DataManagementTimer.IsInitialized Then DataManagementTimer.Enabled = False
+    If MemDB.IsInitialized Then
+        MemDB.Close
+        Log("Database connection closed.")
+    End If
+End Sub
+#End Region
+
+#Region Utility Functions
 Private Sub GetDBFolder As String
     #If B4J
     Return File.DirApp
@@ -149,29 +346,33 @@ Private Sub GetDBFolder As String
     #End If
 End Sub
 
-' Helper: True Atomic File Replace
-Private Sub AtomicReplaceFile (Dir As String, TempFileName As String, FinalFileName As String)
-    #If B4J
-        ' B4J: Use Java NIO for guaranteed OS-level atomic replacement
-        Dim joFiles As JavaObject
-        joFiles.InitializeStatic("java.nio.file.Files")
-        Dim joPaths As JavaObject
-        joPaths.InitializeStatic("java.nio.file.Paths")
-        Dim joCopyOption As JavaObject
-        joCopyOption.InitializeStatic("java.nio.file.StandardCopyOption")
-        
-        Dim sourcePath As Object = joPaths.RunMethod("get", Array(File.Combine(Dir, TempFileName)))
-        Dim targetPath As Object = joPaths.RunMethod("get", Array(File.Combine(Dir, FinalFileName)))
-        
-        joFiles.RunMethod("move", Array(sourcePath, targetPath, joCopyOption.GetField("REPLACE_EXISTING")))
-    #Else
-        ' B4A/B4i: Best possible fallback (Copy first, then delete old, then rename)
-        ' This minimizes the window of vulnerability compared to deleting first.
-        Dim TempFinal As String = FinalFileName & ".new"
-        File.Copy(Dir, TempFileName, Dir, TempFinal)
-        If File.Exists(Dir, FinalFileName) Then File.Delete(Dir, FinalFileName)
-        File.Copy(Dir, TempFinal, Dir, FinalFileName)
-        File.Delete(Dir, TempFileName)
-    #End If
+Public Sub ShowDatabaseStats
+    Try
+        Dim total As Int = MemDB.ExecQuerySingleResult("SELECT COUNT(*) FROM users")
+        Dim active As Int = MemDB.ExecQuerySingleResult("SELECT COUNT(*) FROM users WHERE is_active = 1")
+        Dim inactive As Int = MemDB.ExecQuerySingleResult("SELECT COUNT(*) FROM users WHERE is_active = 0")
+        Dim oldest As String = MemDB.ExecQuerySingleResult("SELECT MIN(created_at) FROM users")
+        Dim newest As String = MemDB.ExecQuerySingleResult("SELECT MAX(created_at) FROM users")
+
+        Log("=== Database Stats ===")
+        Log($"Total records: ${total}"$)
+        Log($"Active records: ${active}"$)
+        Log($"Inactive records: ${inactive}"$)
+        Log($"Oldest record: ${oldest}"$)
+        Log($"Newest record: ${newest}"$)
+        Log("======================")
+    Catch
+        Log("Stats error: " & LastException.Message)
+    End Try
+End Sub
+
+Public Sub ListAllUsers
+    Dim users As List = GetUsers()
+    Log($"=== Users (${users.Size}) ==="$)
+    For Each user As Map In users
+        Log($"{user.Get("id")}: ${user.Get("name")} (${user.Get("email")}), Age: ${user.Get("age")}"$)
+    Next
+    If users.Size = 0 Then Log("No active users found.")
+    Log("======================")
 End Sub
 #End Region
