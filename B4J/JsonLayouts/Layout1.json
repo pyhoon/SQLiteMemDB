@@ -1,0 +1,1392 @@
+{
+    "MaterialIcons": false,
+    "Variants": [
+        {
+            "Scale": 1,
+            "Height": 600,
+            "Width": 600
+        }
+    ],
+    "LayoutHeader": {
+        "Version": 5,
+        "DesignerScript": [
+            "'All variants script\n",
+            "'Variant specific script: 600x600,scale=1\n"
+        ],
+        "GridSize": 10,
+        "ControlsHeaders": [
+            {
+                "JavaType": ".ButtonWrapper",
+                "DesignerType": "Button",
+                "Name": "btnAdd"
+            },
+            {
+                "JavaType": ".ButtonWrapper",
+                "DesignerType": "Button",
+                "Name": "btnDelete"
+            },
+            {
+                "JavaType": ".ButtonWrapper",
+                "DesignerType": "Button",
+                "Name": "btnUpdate"
+            },
+            {
+                "JavaType": ".LabelWrapper",
+                "DesignerType": "Label",
+                "Name": "lblEmail"
+            },
+            {
+                "JavaType": ".LabelWrapper",
+                "DesignerType": "Label",
+                "Name": "lblName"
+            },
+            {
+                "JavaType": ".LabelWrapper",
+                "DesignerType": "Label",
+                "Name": "lblRecordCount"
+            },
+            {
+                "JavaType": ".LabelWrapper",
+                "DesignerType": "Label",
+                "Name": "lblStatus"
+            },
+            {
+                "JavaType": ".LabelWrapper",
+                "DesignerType": "Label",
+                "Name": "lblTitle"
+            },
+            {
+                "JavaType": ".ListViewWrapper",
+                "DesignerType": "ListView",
+                "Name": "lstData"
+            },
+            {
+                "JavaType": ".PaneWrapper$ConcretePaneWrapper",
+                "DesignerType": "Pane",
+                "Name": "Main"
+            },
+            {
+                "JavaType": ".PaneWrapper$ConcretePaneWrapper",
+                "DesignerType": "Pane",
+                "Name": "pnlButtons"
+            },
+            {
+                "JavaType": ".PaneWrapper$ConcretePaneWrapper",
+                "DesignerType": "Pane",
+                "Name": "pnlInput"
+            },
+            {
+                "JavaType": ".PaneWrapper$ConcretePaneWrapper",
+                "DesignerType": "Pane",
+                "Name": "pnlTop"
+            },
+            {
+                "JavaType": ".TextInputControlWrapper$TextFieldWrapper",
+                "DesignerType": "TextField",
+                "Name": "txtEmail"
+            },
+            {
+                "JavaType": ".TextInputControlWrapper$TextFieldWrapper",
+                "DesignerType": "TextField",
+                "Name": "txtName"
+            }
+        ],
+        "Files": []
+    },
+    "Data": {
+        "parent": "",
+        "borderColor": {
+            "ValueType": 6,
+            "Value": "0xFF000000"
+        },
+        "drawable": {
+            "color": {
+                "ValueType": 6,
+                "Value": "0xFFF0F8FF"
+            },
+            "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+            "colorKey": "-fx-background-color",
+            "type": "ColorDrawable"
+        },
+        "orientation": "INHERIT",
+        "visible": true,
+        ":kids": {
+            "0": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGridNoDrop",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                ":kids": {
+                    "0": {
+                        "parent": "pnlTop",
+                        "borderColor": {
+                            "ValueType": 6,
+                            "Value": "0xFF000000"
+                        },
+                        "shadow": {
+                            "offsetX": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "offsetY": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "csType": "Dbasic.Designer.ShadowGrid",
+                            "stype": 0,
+                            "type": "",
+                            "radius": {
+                                "ValueType": 7,
+                                "Value": 10
+                            },
+                            "shadowColor": {
+                                "ValueType": 6,
+                                "Value": "0xFF000000"
+                            }
+                        },
+                        "vanchor": 0,
+                        "type": ".LabelWrapper",
+                        "enabled": true,
+                        "variant0": {
+                            "top": 10,
+                            "left": 10,
+                            "hanchor": 2,
+                            "width": 10,
+                            "vanchor": 0,
+                            "height": 30
+                        },
+                        "cornerRadius": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "top": 333,
+                        "borderWidth": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "alpha": {
+                            "ValueType": 7,
+                            "Value": 1
+                        },
+                        "hanchor": 0,
+                        "eventName": "lblTitle",
+                        "tag": "",
+                        "text": "SQLite Memory Database Demo",
+                        "wrapText": false,
+                        "height": 30,
+                        "drawable": {
+                            "color": {
+                                "ValueType": 6,
+                                "Value": "0xFFF0F8FF"
+                            },
+                            "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                            "colorKey": "-fx-background-color",
+                            "type": "ColorDrawable"
+                        },
+                        "visible": true,
+                        "csType": "Dbasic.Designer.MetaLabel",
+                        "fontAwesome": "",
+                        "toolTip": "",
+                        "textColor": {
+                            "ValueType": 6,
+                            "Value": "0xCC006600"
+                        },
+                        "javaType": ".LabelWrapper",
+                        "contextMenu": "",
+                        "left": 146,
+                        "materialIcons": "",
+                        "name": "lblTitle",
+                        "width": 100,
+                        "extraCss": "",
+                        "alignment": "CENTER",
+                        "font": {
+                            "fontName": "Arial",
+                            "csType": "Dbasic.Designer.FontGrid",
+                            "fontSize": {
+                                "ValueType": 7,
+                                "Value": 18
+                            },
+                            "bold": false,
+                            "type": "B4IFontWrapper",
+                            "italic": false
+                        }
+                    },
+                    "1": {
+                        "parent": "pnlTop",
+                        "borderColor": {
+                            "ValueType": 6,
+                            "Value": "0xFF000000"
+                        },
+                        "shadow": {
+                            "offsetX": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "offsetY": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "csType": "Dbasic.Designer.ShadowGrid",
+                            "stype": 0,
+                            "type": "",
+                            "radius": {
+                                "ValueType": 7,
+                                "Value": 10
+                            },
+                            "shadowColor": {
+                                "ValueType": 6,
+                                "Value": "0xFF000000"
+                            }
+                        },
+                        "vanchor": 0,
+                        "type": ".LabelWrapper",
+                        "enabled": true,
+                        "variant0": {
+                            "top": 50,
+                            "left": 10,
+                            "hanchor": 2,
+                            "width": 9,
+                            "vanchor": 0,
+                            "height": 24
+                        },
+                        "cornerRadius": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "top": 333,
+                        "borderWidth": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "alpha": {
+                            "ValueType": 7,
+                            "Value": 1
+                        },
+                        "hanchor": 0,
+                        "eventName": "lblRecordCount",
+                        "tag": "",
+                        "text": "Record count: 0 active records",
+                        "wrapText": false,
+                        "height": 30,
+                        "drawable": {
+                            "color": {
+                                "ValueType": 6,
+                                "Value": "0xFFF0F8FF"
+                            },
+                            "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                            "colorKey": "-fx-background-color",
+                            "type": "ColorDrawable"
+                        },
+                        "visible": true,
+                        "csType": "Dbasic.Designer.MetaLabel",
+                        "fontAwesome": "",
+                        "toolTip": "",
+                        "textColor": {
+                            "ValueType": 6,
+                            "Value": "0xFF505050"
+                        },
+                        "javaType": ".LabelWrapper",
+                        "contextMenu": "",
+                        "left": 146,
+                        "materialIcons": "",
+                        "name": "lblRecordCount",
+                        "width": 100,
+                        "extraCss": "",
+                        "alignment": "CENTER",
+                        "font": {
+                            "fontName": "DEFAULT",
+                            "csType": "Dbasic.Designer.FontGrid",
+                            "fontSize": {
+                                "ValueType": 7,
+                                "Value": 12
+                            },
+                            "bold": false,
+                            "type": "B4IFontWrapper",
+                            "italic": false
+                        }
+                    },
+                    "2": {
+                        "parent": "pnlTop",
+                        "borderColor": {
+                            "ValueType": 6,
+                            "Value": "0xFF000000"
+                        },
+                        "shadow": {
+                            "offsetX": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "offsetY": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "csType": "Dbasic.Designer.ShadowGrid",
+                            "stype": 0,
+                            "type": "",
+                            "radius": {
+                                "ValueType": 7,
+                                "Value": 10
+                            },
+                            "shadowColor": {
+                                "ValueType": 6,
+                                "Value": "0xFF000000"
+                            }
+                        },
+                        "vanchor": 0,
+                        "type": ".LabelWrapper",
+                        "enabled": true,
+                        "variant0": {
+                            "top": 75,
+                            "left": 10,
+                            "hanchor": 2,
+                            "width": 10,
+                            "vanchor": 0,
+                            "height": 20
+                        },
+                        "cornerRadius": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "top": 333,
+                        "borderWidth": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "alpha": {
+                            "ValueType": 7,
+                            "Value": 1
+                        },
+                        "hanchor": 0,
+                        "eventName": "lblStatus",
+                        "tag": "",
+                        "text": "Ready",
+                        "wrapText": false,
+                        "height": 30,
+                        "drawable": {
+                            "color": {
+                                "ValueType": 6,
+                                "Value": "0xFFF0F8FF"
+                            },
+                            "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                            "colorKey": "-fx-background-color",
+                            "type": "ColorDrawable"
+                        },
+                        "visible": true,
+                        "csType": "Dbasic.Designer.MetaLabel",
+                        "fontAwesome": "",
+                        "toolTip": "",
+                        "textColor": {
+                            "ValueType": 6,
+                            "Value": "0xFF646464"
+                        },
+                        "javaType": ".LabelWrapper",
+                        "contextMenu": "",
+                        "left": 146,
+                        "materialIcons": "",
+                        "name": "lblStatus",
+                        "width": 100,
+                        "extraCss": "",
+                        "alignment": "CENTER",
+                        "font": {
+                            "fontName": "DEFAULT",
+                            "csType": "Dbasic.Designer.FontGrid",
+                            "fontSize": {
+                                "ValueType": 7,
+                                "Value": 15
+                            },
+                            "bold": false,
+                            "type": "B4IFontWrapper",
+                            "italic": false
+                        }
+                    }
+                },
+                "vanchor": 0,
+                "type": ".PaneWrapper$ConcretePaneWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 0,
+                    "left": 0,
+                    "hanchor": 2,
+                    "width": 1,
+                    "vanchor": 0,
+                    "height": 105
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 0
+                },
+                "top": 46,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 0
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "pnlTop",
+                "tag": "",
+                "height": 200,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "orientation": "INHERIT",
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaPane",
+                "javaType": ".PaneWrapper$ConcretePaneWrapper",
+                "left": 224,
+                "name": "pnlTop",
+                "width": 200,
+                "extraCss": ""
+            },
+            "1": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGridNoDrop",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                ":kids": {
+                    "0": {
+                        "parent": "pnlInput",
+                        "borderColor": {
+                            "ValueType": 6,
+                            "Value": "0xFF000000"
+                        },
+                        "shadow": {
+                            "offsetX": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "offsetY": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "csType": "Dbasic.Designer.ShadowGrid",
+                            "stype": 0,
+                            "type": "",
+                            "radius": {
+                                "ValueType": 7,
+                                "Value": 10
+                            },
+                            "shadowColor": {
+                                "ValueType": 6,
+                                "Value": "0xFF000000"
+                            }
+                        },
+                        "vanchor": 0,
+                        "type": ".LabelWrapper",
+                        "enabled": true,
+                        "variant0": {
+                            "top": 20,
+                            "left": 20,
+                            "hanchor": 0,
+                            "width": 80,
+                            "vanchor": 0,
+                            "height": 30
+                        },
+                        "cornerRadius": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "top": 29,
+                        "borderWidth": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "alpha": {
+                            "ValueType": 7,
+                            "Value": 1
+                        },
+                        "hanchor": 0,
+                        "eventName": "lblName",
+                        "tag": "",
+                        "text": "Name:",
+                        "wrapText": false,
+                        "height": 30,
+                        "drawable": {
+                            "color": {
+                                "ValueType": 6,
+                                "Value": "0xFFF0F8FF"
+                            },
+                            "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                            "colorKey": "-fx-background-color",
+                            "type": "ColorDrawable"
+                        },
+                        "visible": true,
+                        "csType": "Dbasic.Designer.MetaLabel",
+                        "fontAwesome": "",
+                        "toolTip": "",
+                        "textColor": {
+                            "ValueType": 6,
+                            "Value": "0xFFF0F8FF"
+                        },
+                        "javaType": ".LabelWrapper",
+                        "contextMenu": "",
+                        "left": 174,
+                        "materialIcons": "",
+                        "name": "lblName",
+                        "width": 100,
+                        "extraCss": "",
+                        "alignment": "CENTER_LEFT",
+                        "font": {
+                            "fontName": "DEFAULT",
+                            "csType": "Dbasic.Designer.FontGrid",
+                            "fontSize": {
+                                "ValueType": 7,
+                                "Value": 15
+                            },
+                            "bold": false,
+                            "type": "B4IFontWrapper",
+                            "italic": false
+                        }
+                    },
+                    "1": {
+                        "parent": "pnlInput",
+                        "borderColor": {
+                            "ValueType": 6,
+                            "Value": "0xFF000000"
+                        },
+                        "shadow": {
+                            "offsetX": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "offsetY": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "csType": "Dbasic.Designer.ShadowGrid",
+                            "stype": 0,
+                            "type": "",
+                            "radius": {
+                                "ValueType": 7,
+                                "Value": 10
+                            },
+                            "shadowColor": {
+                                "ValueType": 6,
+                                "Value": "0xFF000000"
+                            }
+                        },
+                        "vanchor": 0,
+                        "type": ".TextInputControlWrapper$TextFieldWrapper",
+                        "enabled": true,
+                        "variant0": {
+                            "top": 20,
+                            "left": 110,
+                            "hanchor": 2,
+                            "width": 10,
+                            "vanchor": 0,
+                            "height": 30
+                        },
+                        "cornerRadius": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "password": false,
+                        "top": 263,
+                        "borderWidth": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "alpha": {
+                            "ValueType": 7,
+                            "Value": 1
+                        },
+                        "hanchor": 0,
+                        "eventName": "txtName",
+                        "tag": "",
+                        "text": "",
+                        "height": 30,
+                        "drawable": {
+                            "color": {
+                                "ValueType": 6,
+                                "Value": "0xFFF0F8FF"
+                            },
+                            "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                            "colorKey": "-fx-base",
+                            "type": "ColorDrawable"
+                        },
+                        "visible": true,
+                        "csType": "Dbasic.Designer.MetaTextField",
+                        "editable": true,
+                        "toolTip": "",
+                        "javaType": ".TextInputControlWrapper$TextFieldWrapper",
+                        "contextMenu": "",
+                        "left": 247,
+                        "name": "txtName",
+                        "width": 100,
+                        "extraCss": "",
+                        "alignment": "CENTER_LEFT",
+                        "prompt": "Enter user name...",
+                        "font": {
+                            "fontName": "DEFAULT",
+                            "csType": "Dbasic.Designer.FontGrid",
+                            "fontSize": {
+                                "ValueType": 7,
+                                "Value": 15
+                            },
+                            "bold": false,
+                            "type": "B4IFontWrapper",
+                            "italic": false
+                        }
+                    },
+                    "2": {
+                        "parent": "pnlInput",
+                        "borderColor": {
+                            "ValueType": 6,
+                            "Value": "0xFF000000"
+                        },
+                        "shadow": {
+                            "offsetX": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "offsetY": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "csType": "Dbasic.Designer.ShadowGrid",
+                            "stype": 0,
+                            "type": "",
+                            "radius": {
+                                "ValueType": 7,
+                                "Value": 10
+                            },
+                            "shadowColor": {
+                                "ValueType": 6,
+                                "Value": "0xFF000000"
+                            }
+                        },
+                        "vanchor": 0,
+                        "type": ".LabelWrapper",
+                        "enabled": true,
+                        "variant0": {
+                            "top": 60,
+                            "left": 20,
+                            "hanchor": 0,
+                            "width": 80,
+                            "vanchor": 0,
+                            "height": 30
+                        },
+                        "cornerRadius": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "top": 29,
+                        "borderWidth": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "alpha": {
+                            "ValueType": 7,
+                            "Value": 1
+                        },
+                        "hanchor": 0,
+                        "eventName": "lblEmail",
+                        "tag": "",
+                        "text": "Email:",
+                        "wrapText": false,
+                        "height": 30,
+                        "drawable": {
+                            "color": {
+                                "ValueType": 6,
+                                "Value": "0xFFF0F8FF"
+                            },
+                            "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                            "colorKey": "-fx-background-color",
+                            "type": "ColorDrawable"
+                        },
+                        "visible": true,
+                        "csType": "Dbasic.Designer.MetaLabel",
+                        "fontAwesome": "",
+                        "toolTip": "",
+                        "textColor": {
+                            "ValueType": 6,
+                            "Value": "0xFFF0F8FF"
+                        },
+                        "javaType": ".LabelWrapper",
+                        "contextMenu": "",
+                        "left": 174,
+                        "materialIcons": "",
+                        "name": "lblEmail",
+                        "width": 100,
+                        "extraCss": "",
+                        "alignment": "CENTER_LEFT",
+                        "font": {
+                            "fontName": "DEFAULT",
+                            "csType": "Dbasic.Designer.FontGrid",
+                            "fontSize": {
+                                "ValueType": 7,
+                                "Value": 15
+                            },
+                            "bold": false,
+                            "type": "B4IFontWrapper",
+                            "italic": false
+                        }
+                    },
+                    "3": {
+                        "parent": "pnlInput",
+                        "borderColor": {
+                            "ValueType": 6,
+                            "Value": "0xFF000000"
+                        },
+                        "shadow": {
+                            "offsetX": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "offsetY": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "csType": "Dbasic.Designer.ShadowGrid",
+                            "stype": 0,
+                            "type": "",
+                            "radius": {
+                                "ValueType": 7,
+                                "Value": 10
+                            },
+                            "shadowColor": {
+                                "ValueType": 6,
+                                "Value": "0xFF000000"
+                            }
+                        },
+                        "vanchor": 0,
+                        "type": ".TextInputControlWrapper$TextFieldWrapper",
+                        "enabled": true,
+                        "variant0": {
+                            "top": 60,
+                            "left": 110,
+                            "hanchor": 2,
+                            "width": 10,
+                            "vanchor": 0,
+                            "height": 30
+                        },
+                        "cornerRadius": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "password": false,
+                        "top": 263,
+                        "borderWidth": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "alpha": {
+                            "ValueType": 7,
+                            "Value": 1
+                        },
+                        "hanchor": 0,
+                        "eventName": "txtEmail",
+                        "tag": "",
+                        "text": "",
+                        "height": 30,
+                        "drawable": {
+                            "color": {
+                                "ValueType": 6,
+                                "Value": "0xFFF0F8FF"
+                            },
+                            "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                            "colorKey": "-fx-base",
+                            "type": "ColorDrawable"
+                        },
+                        "visible": true,
+                        "csType": "Dbasic.Designer.MetaTextField",
+                        "editable": true,
+                        "toolTip": "",
+                        "javaType": ".TextInputControlWrapper$TextFieldWrapper",
+                        "contextMenu": "",
+                        "left": 247,
+                        "name": "txtEmail",
+                        "width": 100,
+                        "extraCss": "",
+                        "alignment": "CENTER_LEFT",
+                        "prompt": "Enter user email...",
+                        "font": {
+                            "fontName": "DEFAULT",
+                            "csType": "Dbasic.Designer.FontGrid",
+                            "fontSize": {
+                                "ValueType": 7,
+                                "Value": 15
+                            },
+                            "bold": false,
+                            "type": "B4IFontWrapper",
+                            "italic": false
+                        }
+                    }
+                },
+                "vanchor": 0,
+                "type": ".PaneWrapper$ConcretePaneWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 140,
+                    "left": 0,
+                    "hanchor": 2,
+                    "width": 0,
+                    "vanchor": 0,
+                    "height": 460
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 0
+                },
+                "top": 267,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 0
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "pnlInput",
+                "tag": "",
+                "height": 200,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "orientation": "INHERIT",
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaPane",
+                "javaType": ".PaneWrapper$ConcretePaneWrapper",
+                "left": 10,
+                "name": "pnlInput",
+                "width": 200,
+                "extraCss": ""
+            },
+            "2": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGridNoDrop",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                ":kids": {
+                    "0": {
+                        "parent": "pnlButtons",
+                        "borderColor": {
+                            "ValueType": 6,
+                            "Value": "0xFF000000"
+                        },
+                        "shadow": {
+                            "offsetX": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "offsetY": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "csType": "Dbasic.Designer.ShadowGrid",
+                            "stype": 0,
+                            "type": "",
+                            "radius": {
+                                "ValueType": 7,
+                                "Value": 10
+                            },
+                            "shadowColor": {
+                                "ValueType": 6,
+                                "Value": "0xFF000000"
+                            }
+                        },
+                        "vanchor": 0,
+                        "type": ".ButtonWrapper",
+                        "enabled": true,
+                        "variant0": {
+                            "top": 5,
+                            "left": 10,
+                            "hanchor": 0,
+                            "width": 160,
+                            "vanchor": 0,
+                            "height": 32
+                        },
+                        "cornerRadius": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "top": 374,
+                        "borderWidth": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "alpha": {
+                            "ValueType": 7,
+                            "Value": 1
+                        },
+                        "hanchor": 0,
+                        "eventName": "btnAdd",
+                        "tag": "",
+                        "text": "Add",
+                        "wrapText": false,
+                        "height": 30,
+                        "drawable": {
+                            "color": {
+                                "ValueType": 6,
+                                "Value": "0xFFF0F8FF"
+                            },
+                            "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                            "colorKey": "-fx-base",
+                            "type": "ColorDrawable"
+                        },
+                        "visible": true,
+                        "csType": "Dbasic.Designer.MetaButton",
+                        "fontAwesome": "",
+                        "toolTip": "",
+                        "textColor": {
+                            "ValueType": 6,
+                            "Value": "0xFFF0F8FF"
+                        },
+                        "javaType": ".ButtonWrapper",
+                        "contextMenu": "",
+                        "left": 331,
+                        "materialIcons": "",
+                        "name": "btnAdd",
+                        "width": 100,
+                        "extraCss": "",
+                        "alignment": "CENTER",
+                        "font": {
+                            "fontName": "DEFAULT",
+                            "csType": "Dbasic.Designer.FontGrid",
+                            "fontSize": {
+                                "ValueType": 7,
+                                "Value": 14
+                            },
+                            "bold": false,
+                            "type": "B4IFontWrapper",
+                            "italic": false
+                        }
+                    },
+                    "1": {
+                        "parent": "pnlButtons",
+                        "borderColor": {
+                            "ValueType": 6,
+                            "Value": "0xFF000000"
+                        },
+                        "shadow": {
+                            "offsetX": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "offsetY": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "csType": "Dbasic.Designer.ShadowGrid",
+                            "stype": 0,
+                            "type": "",
+                            "radius": {
+                                "ValueType": 7,
+                                "Value": 10
+                            },
+                            "shadowColor": {
+                                "ValueType": 6,
+                                "Value": "0xFF000000"
+                            }
+                        },
+                        "vanchor": 0,
+                        "type": ".ButtonWrapper",
+                        "enabled": true,
+                        "variant0": {
+                            "top": 5,
+                            "left": 220,
+                            "hanchor": 0,
+                            "width": 160,
+                            "vanchor": 0,
+                            "height": 32
+                        },
+                        "cornerRadius": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "top": 374,
+                        "borderWidth": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "alpha": {
+                            "ValueType": 7,
+                            "Value": 1
+                        },
+                        "hanchor": 0,
+                        "eventName": "btnUpdate",
+                        "tag": "",
+                        "text": "Update",
+                        "wrapText": false,
+                        "height": 30,
+                        "drawable": {
+                            "color": {
+                                "ValueType": 6,
+                                "Value": "0xFFF0F8FF"
+                            },
+                            "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                            "colorKey": "-fx-base",
+                            "type": "ColorDrawable"
+                        },
+                        "visible": true,
+                        "csType": "Dbasic.Designer.MetaButton",
+                        "fontAwesome": "",
+                        "toolTip": "",
+                        "textColor": {
+                            "ValueType": 6,
+                            "Value": "0xFFF0F8FF"
+                        },
+                        "javaType": ".ButtonWrapper",
+                        "contextMenu": "",
+                        "left": 331,
+                        "materialIcons": "",
+                        "name": "btnUpdate",
+                        "width": 100,
+                        "extraCss": "",
+                        "alignment": "CENTER",
+                        "font": {
+                            "fontName": "DEFAULT",
+                            "csType": "Dbasic.Designer.FontGrid",
+                            "fontSize": {
+                                "ValueType": 7,
+                                "Value": 14
+                            },
+                            "bold": false,
+                            "type": "B4IFontWrapper",
+                            "italic": false
+                        }
+                    },
+                    "2": {
+                        "parent": "pnlButtons",
+                        "borderColor": {
+                            "ValueType": 6,
+                            "Value": "0xFF000000"
+                        },
+                        "shadow": {
+                            "offsetX": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "offsetY": {
+                                "ValueType": 7,
+                                "Value": 0
+                            },
+                            "csType": "Dbasic.Designer.ShadowGrid",
+                            "stype": 0,
+                            "type": "",
+                            "radius": {
+                                "ValueType": 7,
+                                "Value": 10
+                            },
+                            "shadowColor": {
+                                "ValueType": 6,
+                                "Value": "0xFF000000"
+                            }
+                        },
+                        "vanchor": 0,
+                        "type": ".ButtonWrapper",
+                        "enabled": true,
+                        "variant0": {
+                            "top": 5,
+                            "left": 430,
+                            "hanchor": 0,
+                            "width": 160,
+                            "vanchor": 0,
+                            "height": 32
+                        },
+                        "cornerRadius": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "top": 374,
+                        "borderWidth": {
+                            "ValueType": 7,
+                            "Value": 0
+                        },
+                        "alpha": {
+                            "ValueType": 7,
+                            "Value": 1
+                        },
+                        "hanchor": 0,
+                        "eventName": "btnDelete",
+                        "tag": "",
+                        "text": "Delete",
+                        "wrapText": false,
+                        "height": 30,
+                        "drawable": {
+                            "color": {
+                                "ValueType": 6,
+                                "Value": "0xFFF0F8FF"
+                            },
+                            "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                            "colorKey": "-fx-base",
+                            "type": "ColorDrawable"
+                        },
+                        "visible": true,
+                        "csType": "Dbasic.Designer.MetaButton",
+                        "fontAwesome": "",
+                        "toolTip": "",
+                        "textColor": {
+                            "ValueType": 6,
+                            "Value": "0xFFF0F8FF"
+                        },
+                        "javaType": ".ButtonWrapper",
+                        "contextMenu": "",
+                        "left": 331,
+                        "materialIcons": "",
+                        "name": "btnDelete",
+                        "width": 100,
+                        "extraCss": "",
+                        "alignment": "CENTER",
+                        "font": {
+                            "fontName": "DEFAULT",
+                            "csType": "Dbasic.Designer.FontGrid",
+                            "fontSize": {
+                                "ValueType": 7,
+                                "Value": 14
+                            },
+                            "bold": false,
+                            "type": "B4IFontWrapper",
+                            "italic": false
+                        }
+                    }
+                },
+                "vanchor": 0,
+                "type": ".PaneWrapper$ConcretePaneWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 100,
+                    "left": 0,
+                    "hanchor": 2,
+                    "width": 0,
+                    "vanchor": 0,
+                    "height": 40
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 0
+                },
+                "top": 402,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 0
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "pnlButtons",
+                "tag": "",
+                "height": 200,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "orientation": "INHERIT",
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaPane",
+                "javaType": ".PaneWrapper$ConcretePaneWrapper",
+                "left": 143,
+                "name": "pnlButtons",
+                "width": 200,
+                "extraCss": ""
+            },
+            "3": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGrid",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                "vanchor": 0,
+                "type": ".ListViewWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 250,
+                    "left": 20,
+                    "hanchor": 2,
+                    "width": 20,
+                    "vanchor": 2,
+                    "height": 20
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 0
+                },
+                "top": 337,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 0
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "lstData",
+                "tag": "",
+                "height": 300,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-base",
+                    "type": "ColorDrawable"
+                },
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaListView",
+                "toolTip": "",
+                "javaType": ".ListViewWrapper",
+                "contextMenu": "",
+                "left": 292,
+                "name": "lstData",
+                "width": 150,
+                "extraCss": "",
+                "font": {
+                    "fontName": "DEFAULT",
+                    "csType": "Dbasic.Designer.FontGrid",
+                    "fontSize": {
+                        "ValueType": 7,
+                        "Value": 15
+                    },
+                    "bold": false,
+                    "type": "B4IFontWrapper",
+                    "italic": false
+                },
+                "multipleSelection": false
+            }
+        },
+        "csType": "Dbasic.Designer.MetaMain",
+        "handleResizeEvent": true,
+        "type": ".PaneWrapper$ConcretePaneWrapper",
+        "title": "SQLite Backup Demo",
+        "enabled": true,
+        "variant0": {
+            "top": 0,
+            "left": 0,
+            "hanchor": 0,
+            "width": 200,
+            "vanchor": 0,
+            "height": 200
+        },
+        "cornerRadius": {
+            "ValueType": 7,
+            "Value": 0
+        },
+        "javaType": ".PaneWrapper$ConcretePaneWrapper",
+        "duration": 0,
+        "file": "",
+        "borderWidth": {
+            "ValueType": 7,
+            "Value": 0
+        },
+        "alpha": {
+            "ValueType": 7,
+            "Value": 1
+        },
+        "name": "Main",
+        "eventName": "MainForm",
+        "extraCss": "",
+        "tag": ""
+    },
+    "FontAwesome": false
+}
