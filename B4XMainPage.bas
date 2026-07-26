@@ -52,6 +52,31 @@ Private Sub B4XPage_Created (Root1 As B4XView)
     StartAutoSaveLoop
 End Sub
 
+' Add this to handle app exit
+Private Sub B4XPage_CloseRequest As ResumableSub
+	SaveAndCleanup
+	Return True
+End Sub
+
+' Optional: Add manual save trigger from UI
+Public Sub ManualSave
+    Log("Manual save triggered...")
+    SafeVacuumToDisk
+End Sub
+
+' Optional: Verify memory database integrity
+Public Sub VerifyMemoryDatabase As Boolean
+    Try
+        Dim result As Int = MemDB.ExecQuerySingleResult("SELECT 1")
+		Log(result)
+        Return True
+    Catch
+        Log("Memory database corruption detected!")
+        Return False
+    End Try
+End Sub
+
+
 #Region Database Initialization & Hydration
 Private Sub InitializeMemoryDB
     #If B4J
