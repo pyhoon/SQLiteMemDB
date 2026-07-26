@@ -1,0 +1,181 @@
+﻿AppType=StandardJava
+Build1=Default,b4j.sqlite.memory
+Group=Default Group
+Library1=javaobject
+Library2=jcore
+Library3=jsql
+NumberOfFiles=0
+NumberOfLibraries=3
+NumberOfModules=0
+Version=10.5
+@EndOfDesignText@
+'Non-UI application (console / server application)
+#Region Project Attributes 
+	#CommandLineArgs:
+	#MergeLibraries: True
+#End Region
+#AdditionalJar: sqlite-jdbc-3.53.2.0
+Sub Process_Globals
+    Private MemDB As SQL
+    Private AutoSaveTimer As Timer
+    
+    ' Configurations
+    Private Const DB_NAME As String = "persistent.db"
+    Private Const DB_TMP As String = "persistent.db.tmp"
+    Private Const AUTO_SAVE_INTERVAL_MS As Int = 5000 ' 5 minutes
+End Sub
+
+Sub AppStart (Args() As String)
+    ' 1. Spin up the fresh in-memory space
+    InitializeMemoryDB
+    
+    ' 2. Hydrate memory from disk backup if it exists
+    If File.Exists(GetDBFolder, DB_NAME) Then
+        LoadBackupIntoMemory
+    Else
+        CreateInitialTables ' First run configuration
+    End If
+    
+    ' 3. Boot up the background auto-save loop
+    StartAutoSaveLoop
+	
+	StartMessageLoop
+End Sub
+
+#Region Database Initialization & Hydration
+
+Private Sub InitializeMemoryDB
+    #If B4J
+    ' FIX 1: B4J requires the full JDBC string for in-memory DBs
+    #if B4J
+    MemDB.InitializeSQLite("", ":memory:", True)
+    #Else If B4A OR B4I
+    MemDB.Initialize("", ":memory:", True)
+    #End If
+    #Else
+    MemDB.Initialize("", ":memory:", True)
+    #End If
+    Log("In-Memory SQLite space established.")
+End Sub
+
+' DISK -> MEMORY
+Private Sub LoadBackupIntoMemory
+    ' FIX 2: Force forward slashes for SQLite engine compatibility (especially on Windows)
+    Dim FullDiskPath As String = File.Combine(GetDBFolder, DB_NAME).Replace("\", "/")
+    
+    Try
+        ' Link the physical disk file directly to our RAM workspace instance
+        MemDB.ExecNonQuery($"ATTACH DATABASE '${FullDiskPath}' AS disk_db"$)
+        
+        ' FIX 3: DO NOT use "CREATE TABLE ... AS SELECT". It destroys Primary Keys, 
+        ' AUTOINCREMENT, and Indexes. Explicitly define your schema instead.
+        MemDB.ExecNonQuery("CREATE TABLE IF NOT EXISTS main.users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)")
+        
+        ' Inject data blocks straight over
+        MemDB.ExecNonQuery("INSERT OR REPLACE INTO main.users SELECT * FROM disk_db.users")
+        
+        Log("Hydration Complete: Backup successfully parsed into system RAM.")
+        
+        ' FIX 4: B4X does NOT have a 'Finally' block. Detach must happen here on success.
+        MemDB.ExecNonQuery("DETACH DATABASE disk_db")
+        
+    Catch
+        Log("Hydration Failure: " & LastException.Message)
+        ' Ensure detach happens even on failure to prevent "database disk_db is already attached" errors later
+        Try
+            MemDB.ExecNonQuery("DETACH DATABASE disk_db")
+        Catch
+            ' Ignore detach errors if it never attached in the first place
+			Log(LastException.Message)
+        End Try
+    End Try
+End Sub
+
+Private Sub CreateInitialTables
+    MemDB.ExecNonQuery("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)")
+    MemDB.ExecNonQuery2("INSERT INTO users (name) VALUES (?)", Array("First User Instance"))
+End Sub
+
+#End Region
+
+#Region Safe Auto-Save Infrastructure
+
+Private Sub StartAutoSaveLoop
+    AutoSaveTimer.Initialize("AutoSaveTimer", AUTO_SAVE_INTERVAL_MS)
+    AutoSaveTimer.Enabled = True
+    Log("Background auto-save engine initiated.")
+End Sub
+
+Private Sub AutoSaveTimer_Tick
+    Log("Auto-save interval triggered...")
+    SafeVacuumToDisk
+End Sub
+
+' MEMORY -> DISK (Shadow Swapping Pattern)
+Public Sub SafeVacuumToDisk
+    Dim TargetFolder As String = GetDBFolder
+    ' FIX 2: Force forward slashes for VACUUM INTO
+    Dim SafeTempPath As String = File.Combine(TargetFolder, DB_TMP).Replace("\", "/")
+    
+    ' Clean up residual temp files from historical application crashes
+    If File.Exists(TargetFolder, DB_TMP) Then
+        File.Delete(TargetFolder, DB_TMP)
+    End If
+    
+    Try
+        ' FIX 5: Do NOT use parameterized queries (?) for VACUUM INTO filenames. 
+        ' SQLite JDBC drivers often fail to bind DDL/utility command parameters correctly.
+        ' Use string interpolation with escaped single quotes instead.
+        MemDB.ExecNonQuery($"VACUUM INTO '${SafeTempPath}'"$)
+        
+        ' FIX 6: Perform a TRUE atomic replace. 
+        ' Deleting the original BEFORE copying creates a race condition where a crash = total data loss.
+        AtomicReplaceFile(TargetFolder, DB_TMP, DB_NAME)
+        
+        Log("Auto-Save State: Success. Backup file rewritten safely.")
+        
+    Catch
+        Log("Auto-Save State: Failed! Reason: " & LastException.Message)
+        ' Purge invalid chunk allocations 
+        If File.Exists(TargetFolder, DB_TMP) Then
+            File.Delete(TargetFolder, DB_TMP)
+        End If
+    End Try
+End Sub
+
+' Cross-Platform Runtime Storage Path Resolver
+Private Sub GetDBFolder As String
+    #If B4J
+    Return File.DirApp
+    #Else
+    Return File.DirInternal
+    #End If
+End Sub
+
+' Helper: True Atomic File Replace
+Private Sub AtomicReplaceFile (Dir As String, TempFileName As String, FinalFileName As String)
+    #If B4J
+        ' B4J: Use Java NIO for guaranteed OS-level atomic replacement
+        Dim joFiles As JavaObject
+        joFiles.InitializeStatic("java.nio.file.Files")
+        Dim joPaths As JavaObject
+        joPaths.InitializeStatic("java.nio.file.Paths")
+        Dim joCopyOption As JavaObject
+        joCopyOption.InitializeStatic("java.nio.file.StandardCopyOption")
+        
+        Dim sourcePath As Object = joPaths.RunMethod("get", Array(File.Combine(Dir, TempFileName)))
+        Dim targetPath As Object = joPaths.RunMethod("get", Array(File.Combine(Dir, FinalFileName)))
+        
+        joFiles.RunMethod("move", Array(sourcePath, targetPath, joCopyOption.GetField("REPLACE_EXISTING")))
+    #Else
+        ' B4A/B4i: Best possible fallback (Copy first, then delete old, then rename)
+        ' This minimizes the window of vulnerability compared to deleting first.
+        Dim TempFinal As String = FinalFileName & ".new"
+        File.Copy(Dir, TempFileName, Dir, TempFinal)
+        If File.Exists(Dir, FinalFileName) Then File.Delete(Dir, FinalFileName)
+        File.Copy(Dir, TempFinal, Dir, FinalFileName)
+        File.Delete(Dir, TempFileName)
+    #End If
+End Sub
+
+#End Region
