@@ -1,0 +1,136 @@
+{
+  "Type": "Panel",
+  "Name": "Root",
+  "Width": -1,
+  "Height": -1,
+  "Color": "0xFFFFFFFF",
+  "SubViews": [
+    {
+      "Type": "Panel",
+      "Name": "pnlTop",
+      "Left": 0,
+      "Top": 0,
+      "Width": -1,
+      "Height": 100,
+      "SubViews": [
+        {
+          "Type": "Label",
+          "Name": "lblTitle",
+          "Left": 10,
+          "Top": 10,
+          "Width": -1,
+          "Height": 30,
+          "Text": "SQLite Memory Database Demo",
+          "TextSize": 18,
+          "TextColor": "0xFF0066CC",
+          "Font": {
+            "Name": "Arial",
+            "Size": 18
+          }
+        },
+        {
+          "Type": "Label",
+          "Name": "lblRecordCount",
+          "Left": 10,
+          "Top": 50,
+          "Width": -1,
+          "Height": 24,
+          "Text": "Total: 0 active records",
+          "TextSize": 12,
+          "TextColor": "0xFF505050"
+        },
+        {
+          "Type": "Label",
+          "Name": "lblStatus",
+          "Left": 10,
+          "Top": 75,
+          "Width": -1,
+          "Height": 20,
+          "Text": "Ready",
+          "TextSize": 10,
+          "TextColor": "0xFF646464"
+        }
+      ]
+    },
+    {
+      "Type": "Panel",
+      "Name": "pnlInput",
+      "Left": 0,
+      "Top": 105,
+      "Width": -1,
+      "Height": 50,
+      "SubViews": [
+        {
+          "Type": "Label",
+          "Name": "lblName",
+          "Left": 10,
+          "Top": 5,
+          "Width": 40,
+          "Height": 30,
+          "Text": "Name:",
+          "TextSize": 12
+        },
+        {
+          "Type": "TextField",
+          "Name": "txtName",
+          "Left": 55,
+          "Top": 5,
+          "Width": -1,
+          "Height": 30,
+          "PromptText": "Enter user name..."
+        }
+      ]
+    },
+    {
+      "Type": "Panel",
+      "Name": "pnlButtons",
+      "Left": 0,
+      "Top": 160,
+      "Width": -1,
+      "Height": 40,
+      "SubViews": [
+        {
+          "Type": "Button",
+          "Name": "btnAdd",
+          "Left": 10,
+          "Top": 5,
+          "Width": 186,
+          "Height": 32,
+          "Text": "Add",
+          "Color": "0xFF4CAF50",
+          "TextColor": "0xFFFFFFFF"
+        },
+        {
+          "Type": "Button",
+          "Name": "btnUpdate",
+          "Left": 206,
+          "Top": 5,
+          "Width": 186,
+          "Height": 32,
+          "Text": "Update",
+          "Color": "0xFF2196F3",
+          "TextColor": "0xFFFFFFFF"
+        },
+        {
+          "Type": "Button",
+          "Name": "btnDelete",
+          "Left": 402,
+          "Top": 5,
+          "Width": 186,
+          "Height": 32,
+          "Text": "Delete",
+          "Color": "0xFFF44336",
+          "TextColor": "0xFFFFFFFF"
+        }
+      ]
+    },
+    {
+      "Type": "ListView",
+      "Name": "lstData",
+      "Left": 0,
+      "Top": 205,
+      "Width": -1,
+      "Height": -1
+    }
+  ]
+}
